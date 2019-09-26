@@ -67,7 +67,18 @@ class dfa:
 def _test():
     DFA = dfa(['1', '2', '3'], ['a','b'], [('1', 'a', '2'), ('2', 'b', '3'), ('3', 'a', '1')], '1', ['3'])
     print(repr(DFA))
+    print('Test String: ab')
     print(DFA.accepts('ab'))
+
+    DFA = dfa(['1', '2', '3'], ['a','b'], [('1', 'a', '2'), ('2', 'b', '3'), ('3', 'a', '1')], '1', ['3'])
+    print(repr(DFA))
+    print('Test String: ba')
+    print(DFA.accepts('ba'))
+
+    DFA = dfa(['1', '2', '3'], ['a','b'], [('1', 'a', '2'), ('2', 'b', '3'), ('3', 'a', '1')], '1', ['3'])
+    print(repr(DFA))
+    print('Test String: a')
+    print(DFA.accepts('a'))
 
 
 if __name__ == '__main__':
