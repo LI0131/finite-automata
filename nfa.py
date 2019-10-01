@@ -63,16 +63,19 @@ class nfa:
                 return True if curr_state in self.accepting_states else False
  
             next_state = None
+            next_e_state = None
             next_char = lang_string[0]
             for transition in self.transitions:
                 _start = transition[0]
                 _char = transition[1]
                 _end = transition[2]
+                if curr_state == _start and _char == 'e' and _start is not _end:
+                    next_e_state = _end
                 if curr_state == _start and next_char == _char:
                     next_state = _end
-                    break
 
-            return _recursively_check_string(self, lang_string[1:], next_state) if next_state else False
+            return (_recursively_check_string(self, lang_string, next_e_state) if next_e_state else False) or \
+            (_recursively_check_string(self, lang_string[1:], next_state) if next_state else False)
                 
         if type(lang_string) != str:
             sys.exit('Given string is not of valid type. Please Enter a str.')
@@ -83,21 +86,14 @@ def _test():
     NFA = nfa(
         ['1', '2', '3'], 
         ['a','b'], 
-        [('1', 'a', '2'), ('2', 'b', '3'), ('3', 'a', '1'), ('1', 'e', '1'), ('2', 'e', '2'), ('3', 'e', '3')],
+        [('1', 'a', '2'), ('2', 'b', '3'), ('3', 'a', '3'), ('1', 'e', '1'), ('2', 'e', '2'), ('3', 'e', '1')],
         '1', 
         ['3'])
     print(repr(NFA))
 
+    print('Test String: abab')
+    print(NFA.accepts('abab'))
+
 
 if __name__ == '__main__':
     _test()
-
-'''
-Questions:
-
-1. When I am specifying a language in my test cases should I be providing epsilon as part of the string?
-2. If not, how should I be making a decision as to the next step? Should I recur on each epsilon path?
-    2.a. I don't think that that will work bc if each state has a defined epsilon transition, I will achieve
-        infinite recursion.
-
-'''
