@@ -30,12 +30,23 @@ class nfa:
             return True
         if type(values[0]) == tuple:
             test_transition = values[0]
+            if not self._is_e_transition_defined(values, test_transition[0]):
+                sys.exit('Transitions not fully specified. Each state must have an epsilon transition')
             _start = test_transition[0]
             _end = test_transition[2]
             return (_start in states) and (_end in states) and self._recursively_check_validity(states, values[1:])
         else:
             return (values[0] in states) and self._recursively_check_validity(states, values[1:])
 
+
+    def _is_e_transition_defined(self, transitions, state):
+        isDefined = False
+        for transition in transitions:
+            if transition[0] == state and transition[1] == 'e':
+                isDefined = True
+                break
+        return isDefined
+ 
 
     def __repr__(self):
         output_str = ''
@@ -63,15 +74,30 @@ class nfa:
 
             return _recursively_check_string(self, lang_string[1:], next_state) if next_state else False
                 
-
         if type(lang_string) != str:
             sys.exit('Given string is not of valid type. Please Enter a str.')
         return _recursively_check_string(self, lang_string, self.start_state)
+
+
+def _test():
+    NFA = nfa(
+        ['1', '2', '3'], 
+        ['a','b'], 
+        [('1', 'a', '2'), ('2', 'b', '3'), ('3', 'a', '1'), ('1', 'e', '1'), ('2', 'e', '2'), ('3', 'e', '3')],
+        '1', 
+        ['3'])
+    print(repr(NFA))
+
+
+if __name__ == '__main__':
+    _test()
 
 '''
 Questions:
 
 1. When I am specifying a language in my test cases should I be providing epsilon as part of the string?
 2. If not, how should I be making a decision as to the next step? Should I recur on each epsilon path?
+    2.a. I don't think that that will work bc if each state has a defined epsilon transition, I will achieve
+        infinite recursion.
 
 '''
